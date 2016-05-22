@@ -1,0 +1,6 @@
+#ignore objs
+.objs/*
+
+#.vscode
+.vscode/browse.DB*
+
