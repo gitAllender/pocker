@@ -1,5 +1,5 @@
 #ignore objs
-.objs/*
+objs/*
 
 #.vscode
 .vscode/browse.DB*
