@@ -4,3 +4,5 @@
 #.vscode
 .vscode/browse.DB*
 
+project.lock.json
+
