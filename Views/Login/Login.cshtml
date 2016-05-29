@@ -1,0 +1,50 @@
+@model poker.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+    
+<div class="ui container">
+    <h3 class="ui header centered">Please input your name to login</h3>
+    <form class="ui form segment validate-me" asp-controller="Login" asp-action="Login"
+          
+          method="post" role="form" id="loginForm">
+          
+          <!--asp-route-returnurl="@ViewData["ReturnUrl"]"-->
+        <div class="field">
+            <label>Login name</label>
+            <input asp-for="Name" type="text" name="loginName" placeholder="This name will be used as identifier">
+            <div asp-validation-for="LoginModel.Name"></div>
+        </div>
+        <input type="submit" class="ui large blue submit button" value="Login"/>
+        <div asp-validation-summary="All" class="ui error message"></div>
+    </form>
+    
+    <!--<script type="javascript">
+        $('.ui.form')
+            .form({
+                on: 'blur',
+                fields: {
+                  first_name: {
+                    identifier : 'first_name',
+                    rules: [
+                        {
+                            type   : 'empty',
+                            prompt : 'Please enter your first name'
+                        }
+                    ]
+                  },
+                  last_name: {
+                    identifier : 'last_name',
+                    rules: [
+                        {
+                            type   : 'empty',
+                            prompt : 'Please enter your last name'
+                        }
+                    ]
+                  }
+                }
+            })  
+        ;
+    </script>-->
+</div>
