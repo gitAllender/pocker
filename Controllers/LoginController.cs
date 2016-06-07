@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using poker.Models;
 
@@ -11,6 +12,15 @@ namespace poker.Controllers
     public class LoginController : Controller
     {  
         List<Programmer> myRegisteredUsers = new List<Programmer>();
+        
+        private readonly UserManager<ApplicationUser> _userManager;
+        
+        public LoginController(
+            UserManager<ApplicationUser> userManager
+        )
+        {
+            _userManager = userManager;
+        }
          
         public IActionResult Index()
         {
@@ -29,7 +39,7 @@ namespace poker.Controllers
         [HttpPost]
         [AllowAnonymous]
         // [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             //ViewData["ReturnUrl"] = returnUrl;
             
@@ -42,9 +52,16 @@ namespace poker.Controllers
             
             if (ModelState.IsValid)
             {
-                myRegisteredUsers.Add( new Programmer( myRegisteredUsers.Count, model.Name  )  );
-                
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                //myRegisteredUsers.Add( new Programmer( myRegisteredUsers.Count, model.Name  )  );
+                var anUser = new ApplicationUser();
+                anUser.UserName = model.Name;
+
+                var result = await _userManager.CreateAsync( anUser );
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
+                AddErrors( result );
             }
                 
                 
@@ -85,6 +102,14 @@ namespace poker.Controllers
             else
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+        }
+        
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
             }
         }
     }

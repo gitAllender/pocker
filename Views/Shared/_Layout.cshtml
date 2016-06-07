@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Identity
+@using poker.Models
+@inject UserManager<ApplicationUser> UserManager
+
 <!doctype html>
 <html lang="">
 <head>
@@ -31,14 +35,14 @@
             <menulink class="blue item" controller-name="Home" action-name="Contact" menu-text="Contact">Contact</menulink>
             <menulink class="blue item" controller-name="Login" action-name="Login" menu-text="Login"></menulink>
         </div>
+        <div class="blue item">Hello @UserManager.GetUserName(User) </div>
     </div>
 
     <!-- Sidebar Menu -->
     <div class="ui vertical inverted sidebar menu">
         <menulink class="blue item" controller-name="Home" action-name="Index" menu-text="Home"></menulink>
         <menulink class="blue item" controller-name="Home" action-name="About" menu-text="About"></menulink>
-        <menulink class="blue item" controller-name="Home" action-name="Contact" menu-text="Contact"></menulink>
-
+        <menulink class="blue item" controller-name="Home" action-name="Contact" menu-text="Contact"></menulink>        
     </div>
 
     <!-- Page Contents -->

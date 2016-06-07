@@ -4,9 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using poker.Data;
+using poker.Models;
 
 namespace poker
 {
@@ -28,6 +32,14 @@ namespace poker
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+            
+            // Add framework services.
             services.AddMvc();
         }
 
@@ -48,6 +60,8 @@ namespace poker
             }
 
             app.UseStaticFiles();
+            
+            app.UseIdentity();
 
             app.UseMvc(routes =>
             {
