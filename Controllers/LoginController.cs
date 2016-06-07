@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using poker.Models;
 
 namespace poker.Controllers
@@ -14,12 +16,19 @@ namespace poker.Controllers
         List<Programmer> myRegisteredUsers = new List<Programmer>();
         
         private readonly UserManager<ApplicationUser> _userManager;
+
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        private readonly ILogger _logger;
         
-        public LoginController(
-            UserManager<ApplicationUser> userManager
-        )
+        public LoginController (
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ILoggerFactory loggerFactory )
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = loggerFactory.CreateLogger<LoginController>() ;
         }
          
         public IActionResult Index()
@@ -48,8 +57,6 @@ namespace poker.Controllers
             //     return RedirectToLocal(returnUrl);
             // }
             
-            
-            
             if (ModelState.IsValid)
             {
                 //myRegisteredUsers.Add( new Programmer( myRegisteredUsers.Count, model.Name  )  );
@@ -59,6 +66,8 @@ namespace poker.Controllers
                 var result = await _userManager.CreateAsync( anUser );
                 if (result.Succeeded)
                 {
+                    await _signInManager.SignInAsync( anUser, isPersistent: false );
+
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
                 AddErrors( result );
